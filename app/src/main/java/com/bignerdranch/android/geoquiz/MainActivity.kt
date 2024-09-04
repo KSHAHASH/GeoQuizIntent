@@ -67,6 +67,13 @@ class MainActivity : AppCompatActivity() {
         //same thing, because we used the concept of encapsulation to not write same code again and again
         updateQuestion()
 
+        //adding a listener in the TextView
+        //going into the list named questionBank retrieving it's current index everytime
+        binding.questionTextView.setOnClickListener {
+            currentIndex =(currentIndex +1) % questionBank.size
+            updateQuestion()
+        }
+
 
         //trueButton is the id of button in xml layout, it's same for all the views, naming convention with binding
         binding.trueButton.setOnClickListener {
