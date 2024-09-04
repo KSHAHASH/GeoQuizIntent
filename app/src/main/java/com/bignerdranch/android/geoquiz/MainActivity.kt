@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         Question(R.string.question_americas, true),
         Question(R.string.question_asia, true),)
 
-    private var currentIndex:Int = 0
+     private var currentIndex:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +86,25 @@ class MainActivity : AppCompatActivity() {
             checkAnswer(false)
         }
 
+        //binding the previous button
+
+        binding.previousButton.setOnClickListener {
+            // Calculate the new index, wrapping around if necessary
+            //I added a check to see if currentIndex - 1 is less than 0. If it is, the currentIndex is set to the
+            // last index (questionBank.size - 1), ensuring you don't get a negative index.
+            currentIndex = if (currentIndex - 1 < 0) {
+                questionBank.size - 1 // Wrap around to the last question
+            } else {
+                (currentIndex - 1) % questionBank.size
+            }
+
+            if (currentIndex == 0) {
+                val questionId = questionBank[currentIndex].textId
+                binding.questionTextView.setText(questionId)
+            } else {
+                updateQuestion()
+            }
+        }
 
         binding.nextButton.setOnClickListener {
             currentIndex =(currentIndex +1) % questionBank.size
