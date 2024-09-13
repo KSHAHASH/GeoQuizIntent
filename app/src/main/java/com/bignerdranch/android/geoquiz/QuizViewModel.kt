@@ -18,7 +18,8 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         //get the Current_INDEX_KEY otherwise, if Current_index_key is null then, 0 will be the default value
         get()= savedStateHandle[CURRENT_INDEX_KEY] ?:0
         set(value) = savedStateHandle.set(CURRENT_INDEX_KEY, value)
-    //
+    //this setter function updates savedStateHandle when there is change in the currentIndex value in line 30
+    //the currentIndex value will is the parameter for "value" and Current_Index_KEY will be updated with the "value"
 
     val currentQuestionAnswer: Boolean
         get() = questionBank[currentIndex].answer
