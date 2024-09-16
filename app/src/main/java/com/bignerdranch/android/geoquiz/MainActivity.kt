@@ -49,6 +49,19 @@ class MainActivity : AppCompatActivity() {
             updateQuestion()
         }
 
+        binding.previousButton.setOnClickListener {
+            if(quizViewModel.currentIndex >0){
+                quizViewModel.moveToPrevious()
+                val questionTextResId = quizViewModel.currentQuestionText
+                binding.questionTextView.setText(questionTextResId)
+            }
+            else{
+                quizViewModel.currentIndex = quizViewModel.questionBankSize -1
+                val questionTextResId = quizViewModel.currentQuestionText
+                binding.questionTextView.setText(questionTextResId)
+            }
+        }
+
         updateQuestion()
     }
 

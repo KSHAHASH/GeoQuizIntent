@@ -21,6 +21,9 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     //this setter function updates savedStateHandle when there is change in the currentIndex value in line 30
     //the currentIndex value will is the parameter for "value" and Current_Index_KEY will be updated with the "value"
 
+    val questionBankSize: Int
+        get() = questionBank.size
+
     val currentQuestionAnswer: Boolean
         get() = questionBank[currentIndex].answer
 
@@ -29,6 +32,10 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun moveToNext() {
         currentIndex = (currentIndex + 1) % questionBank.size
+    }
+
+    fun moveToPrevious(){
+       currentIndex = (currentIndex -1) % questionBank.size
     }
 
 
