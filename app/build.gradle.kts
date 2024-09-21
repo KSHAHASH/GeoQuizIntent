@@ -46,9 +46,16 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    // Use JUnit 4 for unit tests
+    testImplementation(libs.junit) // JUnit 4
+    // Remove JUnit 5 dependencies if not using them
+    // testImplementation(libs.junit.jupiter)
+
+    // Android testing libraries
+    androidTestImplementation(libs.androidx.junit) // JUnit for Android tests
+    androidTestImplementation(libs.androidx.espresso.core) // Espresso for UI tests
+
     implementation(kotlin("script-runtime"))
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.5")
     implementation("androidx.activity:activity-ktx:1.7.2")

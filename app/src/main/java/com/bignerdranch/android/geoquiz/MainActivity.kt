@@ -61,6 +61,9 @@ class MainActivity : AppCompatActivity() {
                 binding.questionTextView.setText(questionTextResId)
             }
         }
+//        binding.cheatButton.setOnClickListener {
+//            // Start CheatActivity
+//        }
 
         updateQuestion()
     }
