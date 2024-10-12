@@ -1,7 +1,10 @@
 package com.bignerdranch.android.geoquiz
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.android.geoquiz.databinding.ActivityMainBinding
@@ -17,6 +20,26 @@ class MainActivity : AppCompatActivity() {
 
     //instance of the QuizViewModel
     private val quizViewModel : QuizViewModel by viewModels()
+
+    //from the CheatActivity we are requesting result code(Result_OK) and the intent(namely data)
+    //to hear back from the child activity, we use Activity Results API-->registerForActivityResult
+    //it takes two parameters
+    //first--> contract that defines input(Intent) and output(ActivityResult) of the Activity you are trying to start
+    //second--> lambda in which you parse the output that is returned, it is the output from first
+    //ActivityResultContracts.StartActivityForResult() --> this contract specifies that the registered activity will
+    //start another activity with an intent and expects a result back, i.e. RESULT_OK or RESULT_CANCELLED
+    //{result ->  //handle result// } lambda function(with result parameter in it) that defines what to do when the result is received
+    //result parameter contains resultCode-->integer(RESULT_OK or RESULT_CANCELLED), and data (an intent that may contain any extra data returned by the activity
+    private val cheatLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // Handle the result
+        if (result.resultCode == Activity.RESULT_OK){
+            //?. safely calls getBooleanExtra only if result.data is not null
+            //you know getBooleanExtra should match the string and must provide the default value so there is false
+            //in this case we have ?: elvis false to make sure in case result.data is null when no data was passed from activity
+            quizViewModel.isCheater = result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+        }
+    }
 
 
     private val questionAnswers = mutableListOf(
@@ -61,9 +84,13 @@ class MainActivity : AppCompatActivity() {
                 binding.questionTextView.setText(questionTextResId)
             }
         }
-//        binding.cheatButton.setOnClickListener {
-//            // Start CheatActivity
-//        }
+        binding.cheatButton.setOnClickListener {
+            //val intent = Intent(this, CheatActivity::class.java)
+            // Start CheatActivity
+            val answerIsTrue = quizViewModel.currentQuestionAnswer
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+            cheatLauncher.launch(intent)
+        }
 
         updateQuestion()
     }
@@ -107,12 +134,10 @@ class MainActivity : AppCompatActivity() {
         val correctAnswer = quizViewModel.currentQuestionAnswer
 
         //
-        val messageResId = if (userAnswer == correctAnswer) {
-            questionAnswers[quizViewModel.currentIndex] = CORRECT_ANSWER
-            R.string.correct_toast
-        } else {
-            questionAnswers[quizViewModel.currentIndex] = INCORRECT_ANSWER
-            R.string.incorrect_toast
+        val messageResId = when {
+            quizViewModel.isCheater -> R.string.judgment_toast
+            userAnswer == correctAnswer -> R.string.correct_toast
+            else -> R.string.incorrect_toast
         }
 
         binding.trueButton.setEnabled(false)
